@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Video Gallery</title>
+    <style>
+        /* --- CSS: デザイン設定 --- */
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #ff7675;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        /* ログイン画面 */
+        .login-container {
+            background: var(--glass-bg);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 28px;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #636e72;
+            text-transform: uppercase;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 8px rgba(108, 92, 231, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .login-btn:hover {
+            background: #5b4bc4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.6);
+        }
+
+        /* ギャラリー画面 */
+        #gallerySection {
+            display: none;
+            width: 95%;
+            max-width: 1200px;
+            text-align: center;
+            padding: 60px 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        #gallerySection h2 { color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        #gallerySection p { color: #f1f1f1; margin-bottom: 40px; }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 画像カードのスタイル */
+        .video-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .video-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .image-wrapper {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .video-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        .video-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* カード内のテキストエリア */
+        .card-info {
+            padding: 15px;
+            text-align: left;
+            background: white;
+        }
+
+        .card-info h3 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(108, 92, 231, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .video-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .logout-btn {
+            margin-top: 60px;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        #message { color: var(--accent-color); font-weight: bold; margin-top: 15px; }
+        .hint { font-size: 12px; color: #7f8c8d; margin-top: 20px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ログインフォーム -->
+    <div id="loginSection" class="login-container">
+        <h2>Members Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label>ユーザー名</label>
+                <input type="text" id="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <label>パスワード</label>
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-btn">ログイン</button>
+            <p id="message"></p>
+        </form>
+        <div class="hint">
+            <strong>入力例:</strong><br>
+            ✕ abc-123-def@e-net.nara.jp<br>
+            ◯ abc-123-def
+        </div>
+    </div>
+
+    <!-- 2. 画像・動画ギャラリー -->
+    <div id="gallerySection">
+        <h2 id="welcomeMsg">Welcome</h2>
+        <p>Premium Video Collection</p>
+        <div class="image-grid" id="imageGrid">
+            <!-- JSでここにカードが生成される -->
+        </div>
+        <button class="logout-btn" onclick="location.reload()">ログアウト</button>
+    </div>
+
+    <script>
+        // --- 設定データ ---
+        const users = [
+            { id: "mkb-250-pgh", pass: "2025-1IA-SRID" },
+            { id: "test", pass: "test" } // テスト用
+        ];
+
+        // 7枚の画像とURL、タイトル
+        const videoData = [
+            { title: "Nature Vol.1", img: "https://picsum.photos/id/101/400/300", url: "https://www.youtube.com/" },
+            { title: "Urban Life", img: "https://picsum.photos/id/102/400/300", url: "https://www.youtube.com/" },
+            { title: "Mountain High", img: "https://picsum.photos/id/103/400/300", url: "https://www.youtube.com/" },
+            { title: "Ocean Blue", img: "https://picsum.photos/id/104/400/300", url: "https://www.youtube.com/" },
+            { title: "Forest Walk", img: "https://picsum.photos/id/106/400/300", url: "https://www.youtube.com/" },
+            { title: "Tech World", img: "https://picsum.photos/id/107/400/300", url: "https://www.youtube.com/" },
+            { title: "Night View", img: "https://picsum.photos/id/108/400/300", url: "https://www.youtube.com/" }
+        ];
+
+        const loginForm = document.getElementById('loginForm');
+        const loginSection = document.getElementById('loginSection');
+        const gallerySection = document.getElementById('gallerySection');
+        const imageGrid = document.getElementById('imageGrid');
+        const welcomeMsg = document.getElementById('welcomeMsg');
+        const message = document.getElementById('message');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inputUser = document.getElementById('username').value;
+            const inputPass = document.getElementById('password').value;
+
+            const userMatch = users.find(u => u.id === inputUser && u.pass === inputPass);
+
+            if (userMatch) {
+                showGallery(userMatch.id);
+            } else {
+                message.textContent = "IDまたはパスワードが正しくありません";
+            }
+        });
+
+        function showGallery(username) {
+            loginSection.style.display = 'none';
+            gallerySection.style.display = 'block';
+            welcomeMsg.textContent = `Welcome back, ${username}`;
+
+            videoData.forEach((data) => {
+                const link = document.createElement('a');
+                link.href = data.url;
+                link.target = "_blank";
+                link.style.textDecoration = "none";
+
+                link.innerHTML = `
+                    <div class="video-card">
+                        <div class="image-wrapper">
+                            <img src="${data.img}" alt="${data.title}">
+                            <div class="play-overlay">WATCH NOW</div>
+                        </div>
+                        <div class="card-info">
+                            <h3>${data.title}</h3>
+                        </div>
+                    </div>
+                `;
+                imageGrid.appendChild(link);
+            });
+        }
+    </script>
+</body>
+</html>
