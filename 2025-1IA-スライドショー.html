@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Video Gallery</title>
+    <title>Premium Video Gallery - Embedded</title>
     <style>
         /* --- CSS: デザイン設定 --- */
         :root {
@@ -39,6 +39,7 @@
             text-align: center;
             backdrop-filter: blur(10px);
             animation: fadeIn 0.8s ease-out;
+            z-index: 10;
         }
 
         @keyframes fadeIn {
@@ -46,162 +47,84 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2 {
-            margin-top: 0;
-            font-size: 28px;
-            color: var(--primary-color);
-            letter-spacing: 1px;
-        }
+        h2 { margin-top: 0; font-size: 28px; color: var(--primary-color); letter-spacing: 1px; }
 
-        .input-group {
-            margin-bottom: 25px;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #636e72;
-            text-transform: uppercase;
-        }
-
+        .input-group { margin-bottom: 25px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: #636e72; text-transform: uppercase; }
         .input-group input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #eee;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: all 0.3s;
+            width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px;
+            box-sizing: border-box; font-size: 16px; transition: all 0.3s;
         }
-
-        .input-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 8px rgba(108, 92, 231, 0.2);
-        }
+        .input-group input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 8px rgba(108, 92, 231, 0.2); }
 
         .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.4s;
-            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+            width: 100%; padding: 15px; background: var(--primary-color); color: white;
+            border: none; border-radius: 10px; font-size: 16px; font-weight: bold;
+            cursor: pointer; transition: 0.4s; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
         }
-
-        .login-btn:hover {
-            background: #5b4bc4;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.6);
-        }
+        .login-btn:hover { background: #5b4bc4; transform: translateY(-2px); }
 
         /* ギャラリー画面 */
         #gallerySection {
-            display: none;
-            width: 95%;
-            max-width: 1200px;
-            text-align: center;
-            padding: 60px 20px;
-            animation: fadeIn 0.8s ease-out;
+            display: none; width: 95%; max-width: 1200px; text-align: center;
+            padding: 60px 20px; animation: fadeIn 0.8s ease-out;
         }
-
         #gallerySection h2 { color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         #gallerySection p { color: #f1f1f1; margin-bottom: 40px; }
 
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
 
-        /* 画像カードのスタイル */
         .video-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
+            background: white; border-radius: 20px; overflow: hidden;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            position: relative; cursor: pointer;
         }
+        .video-card:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
 
-        .video-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
+        .image-wrapper { position: relative; height: 200px; overflow: hidden; }
+        .video-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .video-card:hover img { transform: scale(1.1); }
 
-        .image-wrapper {
-            position: relative;
-            height: 200px;
-            overflow: hidden;
-        }
-
-        .video-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: 0.5s;
-        }
-
-        .video-card:hover img {
-            transform: scale(1.1);
-        }
-
-        /* カード内のテキストエリア */
-        .card-info {
-            padding: 15px;
-            text-align: left;
-            background: white;
-        }
-
-        .card-info h3 {
-            margin: 0;
-            font-size: 16px;
-            color: var(--text-color);
-        }
+        .card-info { padding: 15px; text-align: left; background: white; }
+        .card-info h3 { margin: 0; font-size: 16px; color: var(--text-color); }
 
         .play-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(108, 92, 231, 0.9);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: bold;
-            opacity: 0;
-            transition: 0.3s;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(108, 92, 231, 0.9); color: white; padding: 12px 20px;
+            border-radius: 50px; font-size: 14px; font-weight: bold; opacity: 0; transition: 0.3s;
         }
+        .video-card:hover .play-overlay { opacity: 1; }
 
-        .video-card:hover .play-overlay {
-            opacity: 1;
+        /* --- モーダル（動画埋め込み）スタイル --- */
+        .video-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            position: relative; width: 90%; max-width: 900px;
+            background: #000; border-radius: 15px; overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+        /* 16:9の比率を維持するコンテナ */
+        .iframe-container {
+            position: relative; width: 100%; padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        .iframe-container iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+        }
+        .close-modal {
+            position: absolute; top: -45px; right: 0; color: white;
+            font-size: 30px; cursor: pointer; font-weight: bold;
         }
 
         .logout-btn {
-            margin-top: 60px;
-            padding: 12px 30px;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid white;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            margin-top: 60px; padding: 12px 30px; background: rgba(255,255,255,0.2);
+            color: white; border: 2px solid white; border-radius: 30px;
+            cursor: pointer; font-weight: bold; transition: 0.3s;
         }
-
-        .logout-btn:hover {
-            background: white;
-            color: var(--primary-color);
-        }
+        .logout-btn:hover { background: white; color: var(--primary-color); }
 
         #message { color: var(--accent-color); font-weight: bold; margin-top: 15px; }
         .hint { font-size: 12px; color: #7f8c8d; margin-top: 20px; line-height: 1.6; }
@@ -226,14 +149,14 @@
         </form>
         <div class="hint">
             <strong>入力例:</strong><br>
-            ✕ abc-123-def@e-net.nara.jp<br>
-            ◯ abc-123-def
+            ◯ abc-123-def / 1234<br>
+            ✕ abc-123-def@e-net.nara.jp / 1234
         </div>
     </div>
 
     <!-- 2. 画像・動画ギャラリー -->
     <div id="gallerySection">
-        <h2 id="welcomeMsg">Welcome</h2>
+        <h2 id="welcomeMsg">ようこそ</h2>
         <p>Premium Video Collection</p>
         <div class="image-grid" id="imageGrid">
             <!-- JSでここにカードが生成される -->
@@ -241,36 +164,47 @@
         <button class="logout-btn" onclick="location.reload()">ログアウト</button>
     </div>
 
+    <!-- 3. 動画再生用モーダル -->
+    <div id="videoModal" class="video-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times; 閉じる</span>
+            <div class="iframe-container">
+                <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- 設定データ ---
         const users = [
-            { id: "mkb-250-pgh", pass: "2025-1IA-SRID" },
-            { id: "test", pass: "test" } // テスト用
+            { id: "mkb-250-pgh", pass: "2025-1IA-SRID" }
         ];
 
-        // 7枚の画像とURL、タイトル
         const videoData = [
-            { title: "Nature Vol.1", img: "https://picsum.photos/id/101/400/300", url: "https://www.youtube.com/" },
-            { title: "Urban Life", img: "https://picsum.photos/id/102/400/300", url: "https://www.youtube.com/" },
-            { title: "Mountain High", img: "https://picsum.photos/id/103/400/300", url: "https://www.youtube.com/" },
-            { title: "Ocean Blue", img: "https://picsum.photos/id/104/400/300", url: "https://www.youtube.com/" },
-            { title: "Forest Walk", img: "https://picsum.photos/id/106/400/300", url: "https://www.youtube.com/" },
-            { title: "Tech World", img: "https://picsum.photos/id/107/400/300", url: "https://www.youtube.com/" },
-            { title: "Night View", img: "https://picsum.photos/id/108/400/300", url: "https://www.youtube.com/" }
+            { title: "球技大会動画単体", img: "https://picsum.photos/id/101/400/300", url: "https://iframe.mediadelivery.net/embed/471525/cbd8dc9f-df20-424a-8f51-d579257853e8?autoplay=true" },
+            { title: "校外学習動画単体", img: "https://picsum.photos/id/102/400/300", url: "https://iframe.mediadelivery.net/embed/471525/7b339aae-5172-4ec8-9300-78864ee1703f?autoplay=true" },
+            { title: "体育大会動画単体", img: "https://picsum.photos/id/103/400/300", url: "https://iframe.mediadelivery.net/embed/471525/1baa0637-b62b-48c9-8555-e93f31b801e4?autoplay=true" },
+            { title: "文化祭動画単体", img: "https://picsum.photos/id/104/400/300", url: "https://iframe.mediadelivery.net/embed/471525/97f11223-9347-4e62-823b-3879d77c2dda?autoplay=true" },
+            { title: "大学・工場見学動画単体", img: "https://picsum.photos/id/106/400/300", url: "https://iframe.mediadelivery.net/embed/471525/34e43862-f333-44cb-9868-961ef18d66ac?autoplay=true" },
+            { title: "明神山登り動画単体", img: "https://picsum.photos/id/107/400/300", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }, // YouTubeは /embed/ 形式が必要
+            { title: "フル動画", img: "https://picsum.photos/id/108/400/300", url: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
         ];
 
         const loginForm = document.getElementById('loginForm');
         const loginSection = document.getElementById('loginSection');
         const gallerySection = document.getElementById('gallerySection');
         const imageGrid = document.getElementById('imageGrid');
-        const welcomeMsg = document.getElementById('welcomeMsg');
         const message = document.getElementById('message');
+        
+        const videoModal = document.getElementById('videoModal');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const closeModal = document.getElementById('closeModal');
 
+        // ログイン処理
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const inputUser = document.getElementById('username').value;
             const inputPass = document.getElementById('password').value;
-
             const userMatch = users.find(u => u.id === inputUser && u.pass === inputPass);
 
             if (userMatch) {
@@ -280,31 +214,49 @@
             }
         });
 
+        // ギャラリー生成
         function showGallery(username) {
             loginSection.style.display = 'none';
             gallerySection.style.display = 'block';
-            welcomeMsg.textContent = `Welcome back, ${username}`;
+            document.getElementById('welcomeMsg').textContent = `Welcome, ${username}`;
 
             videoData.forEach((data) => {
-                const link = document.createElement('a');
-                link.href = data.url;
-                link.target = "_blank";
-                link.style.textDecoration = "none";
-
-                link.innerHTML = `
-                    <div class="video-card">
-                        <div class="image-wrapper">
-                            <img src="${data.img}" alt="${data.title}">
-                            <div class="play-overlay">WATCH NOW</div>
-                        </div>
-                        <div class="card-info">
-                            <h3>${data.title}</h3>
-                        </div>
+                const card = document.createElement('div');
+                card.className = "video-card";
+                card.innerHTML = `
+                    <div class="image-wrapper">
+                        <img src="${data.img}" alt="${data.title}">
+                        <div class="play-overlay">再生する</div>
+                    </div>
+                    <div class="card-info">
+                        <h3>${data.title}</h3>
                     </div>
                 `;
-                imageGrid.appendChild(link);
+                // クリックイベントでモーダルを開く
+                card.addEventListener('click', () => openModal(data.url));
+                imageGrid.appendChild(card);
             });
         }
+
+        // モーダル操作
+        function openModal(url) {
+            videoPlayer.src = url; // 動画URLをセット
+            videoModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // 背景スクロール禁止
+        }
+
+        function closeVideo() {
+            videoModal.style.display = 'none';
+            videoPlayer.src = ""; // URLを空にして動画を停止させる
+            document.body.style.overflow = 'auto'; // スクロール再開
+        }
+
+        closeModal.addEventListener('click', closeVideo);
+        
+        // モーダルの背景クリックでも閉じる
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) closeVideo();
+        });
     </script>
 </body>
 </html>
